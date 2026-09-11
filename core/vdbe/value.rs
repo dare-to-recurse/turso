@@ -10,7 +10,7 @@ use crate::{
 };
 
 // we use math functions from Rust stdlib in order to be as portable as possible for the production version of the tursodb
-#[cfg(not(test))]
+#[cfg(not(any(test, fuzzing)))]
 mod cmath {
     pub fn exp(x: f64) -> f64 {
         x.exp()
@@ -78,7 +78,7 @@ mod cmath {
 }
 
 // we use exactly same math function as SQLite in tests in order to avoid mismatch in the differential tests due to floating-point precision issues
-#[cfg(test)]
+#[cfg(any(test, fuzzing))]
 mod cmath {
     extern "C" {
         pub fn exp(x: f64) -> f64;
