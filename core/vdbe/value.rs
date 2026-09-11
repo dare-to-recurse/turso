@@ -1245,6 +1245,9 @@ impl Value {
         rhs: &Value,
     ) -> std::result::Result<Value, crate::alloc::TryReserveError> {
         if let (Value::Blob(lhs), Value::Blob(rhs)) = (self, rhs) {
+            if lhs.is_empty() && rhs.is_empty() {
+                return Ok(Value::build_text(""));
+            }
             let mut blob =
                 <crate::ValueBlob as crate::alloc::TursoTryWithCapacityExt>::try_with_capacity_ext(
                     lhs.len() + rhs.len(),
@@ -1838,6 +1841,17 @@ mod tests {
         let rhs = blob(&[3, 4]);
 
         assert_eq!(lhs.exec_concat(&rhs).unwrap(), blob(&[1, 2, 3, 4]));
+    }
+
+    #[test]
+    fn exec_concat_empty_blobs_matches_sqlite() {
+        let lhs = blob(&[]);
+        let rhs = blob(&[]);
+
+        assert_eq!(
+            lhs.exec_concat(&rhs).unwrap(),
+            Value::build_text(String::new())
+        );
     }
 
     #[test]
