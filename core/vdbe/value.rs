@@ -109,7 +109,7 @@ mod cmath {
     const M_PI: f64 = 3.141592653589793238462643383279502884;
 
     pub fn degrees(x: f64) -> f64 {
-        x * 180.0 / M_PI
+        x * (180.0 / M_PI)
     }
     pub fn radians(x: f64) -> f64 {
         x * (M_PI / 180.0)
@@ -1823,6 +1823,13 @@ mod tests {
         let result = Value::from_i64(109).exec_math_unary(&MathFunc::Radians);
 
         assert_eq!(result, Value::from_f64(1.9024088846738192));
+    }
+
+    #[test]
+    fn degrees_of_1095220994380_matches_sqlite() {
+        let result = Value::from_i64(1095220994380).exec_math_unary(&MathFunc::Degrees);
+
+        assert_eq!(result, Value::from_f64(62751540612095.25));
     }
 
     #[test]
