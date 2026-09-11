@@ -112,7 +112,7 @@ mod cmath {
         x * 180.0 / M_PI
     }
     pub fn radians(x: f64) -> f64 {
-        x * M_PI / 180.0
+        x * (M_PI / 180.0)
     }
 }
 
@@ -1803,6 +1803,7 @@ fn compare_chars(p: char, t: char, no_case: bool) -> bool {
 
 #[cfg(test)]
 mod tests {
+    use crate::function::MathFunc;
     use crate::numeric::Numeric;
     use crate::types::Value;
     use crate::vdbe::Register;
@@ -1815,6 +1816,13 @@ mod tests {
 
     fn allocated(result: std::result::Result<Value, crate::alloc::TryReserveError>) -> Value {
         result.expect(crate::alloc::ALLOC_ERR_MSG)
+    }
+
+    #[test]
+    fn radians_of_109_matches_sqlite() {
+        let result = Value::from_i64(109).exec_math_unary(&MathFunc::Radians);
+
+        assert_eq!(result, Value::from_f64(1.9024088846738192));
     }
 
     #[test]
